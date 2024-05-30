@@ -1,0 +1,15 @@
+services:
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+            - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
+            - '15672:15672'  # For RabbitMQ management UI
+        environment:
+            RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER}'
+            RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASSWORD}'
+        networks:
+            - sail
+
+networks:
+    sail:
+        external: true

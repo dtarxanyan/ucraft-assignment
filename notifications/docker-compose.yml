@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: '${PG_USER}'
+      POSTGRES_PASSWORD: '${PG_PASSWORD}'
+      POSTGRES_DB: '${PG_DATABASE}'
+    ports:
+      - '${PG_PORT}:${PG_PORT}'
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - sail
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+    networks:
+      - sail
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
+    networks:
+      - sail
+
+networks:
+  sail:
+    external: true
